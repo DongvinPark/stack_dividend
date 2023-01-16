@@ -1,5 +1,6 @@
 package com.dayone.persist.entity;
 
+import com.dayone.model.Company;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,5 +24,10 @@ public class CompanyEntity {
     private String ticker;
 
     private String name;
+
+    public CompanyEntity(Company company){
+        this.ticker = company.getTicker();
+        this.name = company.getName();
+    }
 
 }

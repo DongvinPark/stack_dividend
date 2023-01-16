@@ -1,0 +1,16 @@
+### CompanyController - save
+POST http://localhost:8080/company
+Content-Type: application/json
+
+{
+  "ticker" : "MMM"
+}
+
+
+### CompanyController - get
+GET http://localhost:8080/company
+
+
+
+### FinanceController - get
+GET http://localhost:8080/finance/dividend/으애앵
