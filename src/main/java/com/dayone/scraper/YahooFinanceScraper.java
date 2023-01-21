@@ -74,7 +74,7 @@ public class YahooFinanceScraper implements Scraper {
                 //System.out.println(year + "/" + month + "/" + day + " -> " + dividend);
             }//for
 
-            scrapedResult.setDividendEntities(dividends);
+            scrapedResult.setDividends(dividends);
 
         } catch (IOException e){
             e.printStackTrace();

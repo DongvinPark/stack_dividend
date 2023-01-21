@@ -7,11 +7,14 @@ import com.dayone.persist.entity.CompanyRepository;
 import com.dayone.persist.entity.DividendEntity;
 import com.dayone.persist.entity.DividendRepository;
 import com.dayone.scraper.Scraper;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.Trie;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -21,6 +24,8 @@ import org.springframework.util.ObjectUtils;
 @Slf4j
 public class CompanyService {
 
+    //IDE 에서 자꾸 Raw Type Warning 을 던져서 타입 명시해줌.
+    private final Trie<String, String> trie;
     private final Scraper yahooFinanceScraper;
     private final CompanyRepository companyRepository;
     private final DividendRepository dividendRepository;
@@ -43,6 +48,34 @@ public class CompanyService {
 
 
 
+    public void addAutocompleteKeyword(String keyword){
+        this.trie.put(keyword, null);
+    }
+
+
+
+    public List<String> autocomplete(String keyword){
+        return new ArrayList<>(this.trie.prefixMap(keyword).keySet());
+    }
+
+
+
+    public List<String> getCompanyNamesByKeyword(String keyword){
+        Pageable limit = PageRequest.of(0,10);
+        Page<CompanyEntity> companyEntities = this.companyRepository.findByNameStartingWithIgnoreCase(keyword, limit);
+        return companyEntities.stream().map(
+            e -> e.getName()
+        ).collect(Collectors.toList());
+    }
+
+
+
+    public void deleteAutocompleteKeyword(String keyword){
+        this.trie.remove(keyword);
+    }
+
+
+
     //-------------- PRIVATE HELPER METHOD AREA -----------
 
 
@@ -60,7 +93,7 @@ public class CompanyService {
         // 스크래핑 결과
         CompanyEntity companyEntity = this.companyRepository.save(new CompanyEntity(company));
 
-        List<DividendEntity> dividendEntities = scrapedResult.getDividendEntities().stream().map(x -> new DividendEntity(
+        List<DividendEntity> dividendEntities = scrapedResult.getDividends().stream().map(x -> new DividendEntity(
             companyEntity.getId(), x)).collect(Collectors.toList());
 
         this.dividendRepository.saveAll(dividendEntities);

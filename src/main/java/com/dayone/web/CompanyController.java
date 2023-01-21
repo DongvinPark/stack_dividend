@@ -29,9 +29,13 @@ public class CompanyController {
 
     @GetMapping("/autocomplete")
     public ResponseEntity<?> autocomplete(
-        @RequestParam String keyWord
+        @RequestParam String keyword
     ){
-        return null;
+        var result = this.companyService.autocomplete(keyword);
+
+        //DB like 연산을 이용한 방법. DB I/O 횟수를 줄일 수 있는 Trie 연산을 쓰기로 한다.
+        //var resultFromDBSearch = this.companyService.getCompanyNamesByKeyword(keyword);
+        return ResponseEntity.ok(result);
     }
 
 
@@ -53,6 +57,10 @@ public class CompanyController {
             throw new RuntimeException("ticker is empty");
         }
         Company company = this.companyService.save(ticker);
+
+        //자동완성용 키워드도 이때 같이 저장
+        this.companyService.addAutocompleteKeyword(company.getName());
+
         return ResponseEntity.ok(company);
     }
 

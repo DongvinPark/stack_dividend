@@ -3,7 +3,7 @@ POST http://localhost:8080/company
 Content-Type: application/json
 
 {
-  "ticker" : "MMM"
+  "ticker" : "AAPL"
 }
 
 
@@ -14,3 +14,8 @@ GET http://localhost:8080/company
 
 ### FinanceController - get
 GET http://localhost:8080/finance/dividend/으애앵
+
+
+
+### AutoComplete test
+GET http://localhost:8080/company/autocomplete?keyword=A
