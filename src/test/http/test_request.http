@@ -3,7 +3,7 @@ POST http://localhost:8080/company
 Content-Type: application/json
 
 {
-  "ticker" : "AAPL"
+  "ticker" : "MMM"
 }
 
 
@@ -13,7 +13,7 @@ GET http://localhost:8080/company
 
 
 ### FinanceController - get
-GET http://localhost:8080/finance/dividend/으애앵
+GET http://localhost:8080/finance/dividend/3M Company
 
 
 

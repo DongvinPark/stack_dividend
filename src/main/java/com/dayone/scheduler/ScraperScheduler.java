@@ -40,10 +40,7 @@ public class ScraperScheduler {
         for(var company : companies){
             log.info("scrapped company : " + company.getName());
             ScrapedResult scrapedResult = this.yahooFinanceScraper.scrap(
-                Company.builder()
-                    .name(company.getName())
-                    .ticker(company.getTicker())
-                .build()
+                new Company(company.getTicker(), company.getName())
             );
 
             // 스크래핑한 배당금 정보 중 DB에 없는 것은 저장

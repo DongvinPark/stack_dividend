@@ -1,10 +1,12 @@
 package com.dayone.model;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Builder
+@NoArgsConstructor //레디스 관련 오류 때문.
+@AllArgsConstructor
 public class Company {
 
     private String ticker;

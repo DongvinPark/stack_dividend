@@ -10,8 +10,11 @@ import com.dayone.persist.entity.DividendRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class FinanceService {
@@ -20,8 +23,10 @@ public class FinanceService {
     private final DividendRepository dividendRepository;
 
 
-
+    //RedisTemplate<K,V>를 사용하지 않는 새로운 방법이었다.
+    @Cacheable(key = "#companyName", value = "finance")
     public ScrapedResult getDividendByCompanyName(String companyName){
+        log.info("search company -> " + companyName);
         // 1. 회사명을 기준으로 회사 정보를 조회
         CompanyEntity company =  this.companyRepository.findByName(companyName)
                                .orElseThrow(() -> new RuntimeException("존재하지 않는 회사명입니다."));
@@ -31,15 +36,10 @@ public class FinanceService {
 
         // 3. 결과 조회 후 반환
         return new ScrapedResult(
-            Company.builder()
-                .ticker(company.getTicker())
-                .name(company.getName())
-                .build() ,
+            new Company(company.getTicker(), company.getName())
+            ,
             dividendEntities.stream().map(
-                x -> Dividend.builder()
-                    .date(x.getDate())
-                    .dividend(x.getDividend())
-                    .build()
+                dividendEntity -> new Dividend(dividendEntity.getDate(), dividendEntity.getDividend())
             ).collect(Collectors.toList())
         );
     }

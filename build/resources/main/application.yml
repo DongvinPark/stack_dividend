@@ -1,4 +1,7 @@
 spring:
+  redis:
+    host: localhost
+    port: 6379
   application:
     name: dayone-financial
   output:
@@ -25,4 +28,4 @@ spring:
 
 scheduler:
   scrap:
-    yahoo: "0/5 * * * * *"
+    yahoo: "0 0 0 * * *"
