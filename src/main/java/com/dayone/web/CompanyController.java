@@ -34,6 +34,7 @@ public class CompanyController {
 
 
     @GetMapping("/autocomplete")
+    @PreAuthorize("hasRole('READ')")
     public ResponseEntity<?> autocomplete(
         @RequestParam String keyword
     ){

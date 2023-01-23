@@ -25,6 +25,7 @@ public class AuthController {
     public ResponseEntity<?> signup(@RequestBody Auth.SignUp request){
         //회원 가입 API
         var result = this.memberService.register(request);
+        log.info("user sign-up -> " + request.getUsername());
         return ResponseEntity.ok(result);
     }
 
