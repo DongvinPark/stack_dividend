@@ -3,10 +3,11 @@ package com.dayone.service;
 import com.dayone.model.Company;
 import com.dayone.model.Dividend;
 import com.dayone.model.ScrapedResult;
+import com.dayone.model.constants.CacheKey;
+import com.dayone.persist.CompanyRepository;
+import com.dayone.persist.DividendRepository;
 import com.dayone.persist.entity.CompanyEntity;
-import com.dayone.persist.entity.CompanyRepository;
 import com.dayone.persist.entity.DividendEntity;
-import com.dayone.persist.entity.DividendRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -24,7 +25,7 @@ public class FinanceService {
 
 
     //RedisTemplate<K,V>를 사용하지 않는 새로운 방법이었다.
-    @Cacheable(key = "#companyName", value = "finance")
+    @Cacheable(key = "#companyName", value = CacheKey.KEY_FINANCE)
     public ScrapedResult getDividendByCompanyName(String companyName){
         log.info("search company -> " + companyName);
         // 1. 회사명을 기준으로 회사 정보를 조회

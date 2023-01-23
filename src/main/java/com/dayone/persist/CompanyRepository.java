@@ -1,5 +1,6 @@
-package com.dayone.persist.entity;
+package com.dayone.persist;
 
+import com.dayone.persist.entity.CompanyEntity;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,5 +15,7 @@ public interface CompanyRepository extends JpaRepository<CompanyEntity, Long> {
     Optional<CompanyEntity> findByName(String name);
 
     Page<CompanyEntity> findByNameStartingWithIgnoreCase(String name, Pageable pageable);
+
+    Optional<CompanyEntity> findByTicker(String ticker);
 
 }

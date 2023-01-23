@@ -2,19 +2,23 @@ package com.dayone.scheduler;
 
 import com.dayone.model.Company;
 import com.dayone.model.ScrapedResult;
+import com.dayone.model.constants.CacheKey;
+import com.dayone.persist.CompanyRepository;
+import com.dayone.persist.DividendRepository;
 import com.dayone.persist.entity.CompanyEntity;
-import com.dayone.persist.entity.CompanyRepository;
 import com.dayone.persist.entity.DividendEntity;
-import com.dayone.persist.entity.DividendRepository;
 import com.dayone.scraper.YahooFinanceScraper;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@EnableCaching // 스케줄러가 동작할 때마다 @CacheEvict도 같이 동작하면서 캐시 데이터를 전부 비워준다.
 @AllArgsConstructor
 public class ScraperScheduler {
 
@@ -29,11 +33,12 @@ public class ScraperScheduler {
 
 
     // 일정 주기마다 실행
+    @CacheEvict(value = CacheKey.KEY_FINANCE, allEntries = true)
     @Scheduled(cron = "${scheduler.scrap.yahoo}")
     public void yahooFinanceScheduling(){
         log.info("scraping scheduler is started");
 
-        // 저장된 회사 목록 조회
+        // 저장된 회사 목록 조회 : 추후 데이터 양이 많아질 경우, SpringBatch를 써야될 가능성이 크다.
         List<CompanyEntity> companies = this.companyRepository.findAll();
 
         // 회사마다 배당금 정보를 새로 스크래핑

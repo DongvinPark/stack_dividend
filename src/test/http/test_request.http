@@ -19,3 +19,45 @@ GET http://localhost:8080/finance/dividend/3M Company
 
 ### AutoComplete test
 GET http://localhost:8080/company/autocomplete?keyword=A
+
+
+
+
+### sign up test - read only user
+POST http://localhost:8080/auth/sign-up
+Content-Type: application/json
+
+{
+  "username": "grace",
+  "password": "1111",
+  "roles": "ROLE_READ"
+}
+
+
+
+
+### sign up test - admin write possible user
+POST http://localhost:8080/auth/sign-up
+Content-Type: application/json
+
+{
+  "username": "dongvin",
+  "password": "1111",
+  "roles": "ROLE_READ,ROLE_WRITE"
+}
+
+
+
+
+### sign in test
+POST http://localhost:8080/auth/sign-in
+Content-Type: application/json
+
+{
+  "username": "dongvin",
+  "password": "1111"
+}
+
+
+
+

@@ -2,10 +2,10 @@ package com.dayone.service;
 
 import com.dayone.model.Company;
 import com.dayone.model.ScrapedResult;
+import com.dayone.persist.CompanyRepository;
+import com.dayone.persist.DividendRepository;
 import com.dayone.persist.entity.CompanyEntity;
-import com.dayone.persist.entity.CompanyRepository;
 import com.dayone.persist.entity.DividendEntity;
-import com.dayone.persist.entity.DividendRepository;
 import com.dayone.scraper.Scraper;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +66,22 @@ public class CompanyService {
         return companyEntities.stream().map(
             e -> e.getName()
         ).collect(Collectors.toList());
+    }
+
+
+
+    public String deleteCompany(String ticker){
+        var company = this.companyRepository.findByTicker(ticker).orElseThrow(
+            () -> new RuntimeException("존재하지 않는 회사입니다.")
+        );
+
+        this.dividendRepository.deleteAllByCompanyId(company.getId());
+        this.companyRepository.delete(company);
+
+        //트라이에 저장해뒀던 회사 이름도 삭제해야 한다.
+        this.deleteAutocompleteKeyword(company.getName());
+
+        return company.getName();
     }
 
 
