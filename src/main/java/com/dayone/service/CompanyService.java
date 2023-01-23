@@ -1,5 +1,8 @@
 package com.dayone.service;
 
+import com.dayone.exception.impl.AlreadyExistTickerException;
+import com.dayone.exception.impl.NoCompanyException;
+import com.dayone.exception.impl.TickerScrapFailException;
 import com.dayone.model.Company;
 import com.dayone.model.ScrapedResult;
 import com.dayone.persist.CompanyRepository;
@@ -35,7 +38,8 @@ public class CompanyService {
     public Company save(String ticker){
         boolean exists = this.companyRepository.existsByTicker(ticker);
         if(exists){
-            throw new RuntimeException("already exists ticker -> " + ticker);
+            //이미 존재하는 틱커에 대한 커스텀 예외 처리.
+            throw new AlreadyExistTickerException();
         }
         return this.storeCompanyAndDividend(ticker);
     }
@@ -64,7 +68,7 @@ public class CompanyService {
         Pageable limit = PageRequest.of(0,10);
         Page<CompanyEntity> companyEntities = this.companyRepository.findByNameStartingWithIgnoreCase(keyword, limit);
         return companyEntities.stream().map(
-            e -> e.getName()
+            CompanyEntity::getName
         ).collect(Collectors.toList());
     }
 
@@ -72,7 +76,7 @@ public class CompanyService {
 
     public String deleteCompany(String ticker){
         var company = this.companyRepository.findByTicker(ticker).orElseThrow(
-            () -> new RuntimeException("존재하지 않는 회사입니다.")
+            NoCompanyException::new
         );
 
         this.dividendRepository.deleteAllByCompanyId(company.getId());
@@ -100,7 +104,7 @@ public class CompanyService {
         // ticker를 기준으로 회사를 스크래핑
         Company company = this.yahooFinanceScraper.scrapCompanyByTicker(ticker);
         if(ObjectUtils.isEmpty(company)){
-            throw new RuntimeException("failed to scrap ticker -> " + ticker);
+            throw new TickerScrapFailException();
         }
 
         // 해당 회사가 존재할 경우, 회사의 배당금 정보를 스프래핑

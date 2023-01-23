@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/finance")
 @AllArgsConstructor
 public class FinanceController {
-
     private final FinanceService financeService;
-
 
     @GetMapping("/dividend/{companyName}")
     public ResponseEntity<?> searchFinance(

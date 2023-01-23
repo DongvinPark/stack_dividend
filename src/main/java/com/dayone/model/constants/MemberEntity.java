@@ -45,7 +45,6 @@ public class MemberEntity implements UserDetails {
     //필요한 메서드만 구현해준다.
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        System.out.println("롤스 출력 : " + this.rolesString);
         /*
             강의에서 등장했던 원래 코드
         return this.roles.stream()
